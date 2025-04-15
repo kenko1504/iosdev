@@ -1,0 +1,17 @@
+# Xcode
+*.xcuserstate
+*.xcuserdata
+Build/
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# CocoaPods
+Pods/
+*.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
