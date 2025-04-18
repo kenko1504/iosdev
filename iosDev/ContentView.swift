@@ -8,14 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var userName: String = ""
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("test")
+        NavigationView{
+            VStack{
+                Text("Bubble Pop")
+                    .bold()
+                TextField("Enter your name:",
+                          text:$userName)
+                NavigationLink(destination: gameView()) {
+                    Text("start game!")
+                        .padding()
+                }
+            }
         }
-        .padding()
+
     }
 }
 
