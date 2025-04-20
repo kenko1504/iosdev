@@ -8,23 +8,23 @@
 import SwiftUI
 
 struct SettingView: View {
-
-    @ObservedObject var settingModel: SettingModel
+    @Binding var numberOfBubbles: Double
+    @Binding var timeLimit: Double
     var body: some View {
         VStack{
-            Text("Time limit: \(Int(settingModel.timeLimit))")
+            Text("Time limit: \(Int(timeLimit))")
             Slider(
-                value: $settingModel.timeLimit,
+                value: $timeLimit,
                 in: 10...60,
                 step: 1
                 )
             .padding(.horizontal, 60.0)
 
-            Text("Number of bubbles: \(Int(settingModel.numberOfBubbles))")
+            Text("Number of bubbles: \(Int(numberOfBubbles))")
                 .padding(.top, 50.0)
             
             Slider(
-                value: $settingModel.numberOfBubbles,
+                value: $numberOfBubbles,
                 in: 5...15,
                 step: 1
                 )
@@ -35,6 +35,8 @@ struct SettingView: View {
     }
 }
 
-#Preview {
-    SettingView(settingModel: SettingModel())
+struct SettingView_Previews: PreviewProvider {
+    static var previews: some View{
+        SettingView(numberOfBubbles: .constant(5), timeLimit: .constant(10))
+    }
 }

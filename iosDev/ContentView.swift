@@ -9,14 +9,16 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var userName: String = ""
-    @State private var numberOfBubbles: Int = 0
-    @State private var timeLimit: Int = 0
+    @State private var numberOfBubbles: Double = 5
+    @State private var timeLimit: Double = 10
     var body: some View {
         NavigationView{
             VStack{
                 HStack{
                     Spacer()
-                    NavigationLink(destination: SettingView(settingModel: SettingModel())) {
+                    //bind the no of bubbles and timeLimit to settings view
+                    NavigationLink(destination:
+                                    SettingView(numberOfBubbles:$numberOfBubbles, timeLimit:$timeLimit)) {
                         Text("Setting")
                             .padding(.horizontal)
                     }
@@ -37,7 +39,7 @@ struct ContentView: View {
                 
                 
                 Spacer()
-                NavigationLink(destination: GameView(settingModel: SettingModel())) {
+                NavigationLink(destination: GameView(timeLimit:$timeLimit)) {
                     Text("start game!")
                         .padding()
                 }

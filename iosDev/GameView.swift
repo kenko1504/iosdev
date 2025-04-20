@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct GameView: View {
-    @ObservedObject var settingModel: SettingModel
+    //receives the binded data "timeLimit" from content view
+    @Binding var timeLimit: Double
     var body: some View {
         VStack{
             HStack{
-                Text("Time: \(Int(settingModel.timeLimit))")
+                Text("Time: \(Int(timeLimit))")
             }
             Spacer()
             
@@ -21,6 +22,8 @@ struct GameView: View {
     }
 }
 
-#Preview {
-    GameView(settingModel: SettingModel())
+struct GameView_Previews: PreviewProvider {
+    static var previews: some View{
+        GameView(timeLimit: .constant(10))
+    }
 }
