@@ -6,3 +6,9 @@
 //
 
 import Foundation
+class SettingModel : ObservableObject {
+    @Published var username: String = ""
+    @Published var timeLimit: Double = 10
+    @Published var numberOfBubbles: Double = 5
+    
+}

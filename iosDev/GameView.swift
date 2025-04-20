@@ -8,13 +8,19 @@
 import SwiftUI
 
 struct GameView: View {
-    @State private var timeLimit: Double = 60
+    @ObservedObject var settingModel: SettingModel
     var body: some View {
+        VStack{
+            HStack{
+                Text("Time: \(Int(settingModel.timeLimit))")
+            }
+            Spacer()
+            
+        }
 
-        Text("Time:")
     }
 }
 
 #Preview {
-    GameView()
+    GameView(settingModel: SettingModel())
 }

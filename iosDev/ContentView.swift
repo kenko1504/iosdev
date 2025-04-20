@@ -16,7 +16,7 @@ struct ContentView: View {
             VStack{
                 HStack{
                     Spacer()
-                    NavigationLink(destination: SettingView()) {
+                    NavigationLink(destination: SettingView(settingModel: SettingModel())) {
                         Text("Setting")
                             .padding(.horizontal)
                     }
@@ -37,7 +37,7 @@ struct ContentView: View {
                 
                 
                 Spacer()
-                NavigationLink(destination: GameView()) {
+                NavigationLink(destination: GameView(settingModel: SettingModel())) {
                     Text("start game!")
                         .padding()
                 }
