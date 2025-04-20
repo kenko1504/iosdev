@@ -7,13 +7,14 @@
 
 import SwiftUI
 
-struct gameView: View {
+struct GameView: View {
+    @State private var timeLimit: Double = 60
     var body: some View {
-        Text("Score:")
+
         Text("Time:")
     }
 }
 
 #Preview {
-    gameView()
+    GameView()
 }
