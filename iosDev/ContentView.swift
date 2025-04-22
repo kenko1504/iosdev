@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var userName: String = ""
-    @State private var numberOfBubbles: Double = 5
-    @State private var timeLimit: Double = 10
+    @State private var numberOfBubbles: Double = 15
+    @State private var timeLimit: Double = 60
     var body: some View {
         NavigationView{
             VStack{
@@ -39,7 +39,7 @@ struct ContentView: View {
                 
                 
                 Spacer()
-                NavigationLink(destination: GameView(timeLimit:$timeLimit)) {
+                NavigationLink(destination: GameView(timeLimit:$timeLimit, numberOfBubbles:$numberOfBubbles)) {
                     Text("start game!")
                         .padding()
                 }

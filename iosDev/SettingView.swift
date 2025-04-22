@@ -15,7 +15,7 @@ struct SettingView: View {
             Text("Time limit: \(Int(timeLimit))")
             Slider(
                 value: $timeLimit,
-                in: 10...60,
+                in: 0...60,
                 step: 1
                 )
             .padding(.horizontal, 60.0)
@@ -25,7 +25,7 @@ struct SettingView: View {
             
             Slider(
                 value: $numberOfBubbles,
-                in: 5...15,
+                in: 0...15,
                 step: 1
                 )
             .padding(.horizontal, 60.0)
