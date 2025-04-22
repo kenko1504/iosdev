@@ -26,9 +26,20 @@ struct GameView: View {
     @Binding var numberOfBubbles: Double
 
     // Screen size placeholder
-    let screenWidth = UIScreen.main.bounds.width
-    let screenHeight = UIScreen.main.bounds.height
+    // -20 offset to ensure bubble fully appears in the game window
+    let screenWidth = UIScreen.main.bounds.width - 20
+    let screenHeight = UIScreen.main.bounds.height - 20
     let bubbleColors: [Color] = [.red, .pink, .green, .blue, .black]
+    
+    // track previous bubble color tapped; initialy color is brown to prevent extra points from consecutive color. this will be replaced in game
+    @State var previousTappedBubble: Color = .brown // must be declared as @State to be mutable
+    let consecutiveMultiplier: Double = 1.5
+    
+    let redPoints: Double = 1
+    let pinkPoints: Double = 2
+    let greenPoints: Double = 5
+    let bluePoints: Double = 8
+    let blackPoints: Double = 10
 
     var body: some View {
         ZStack {
@@ -55,21 +66,52 @@ struct GameView: View {
                     .fill(bubble.color)
                     .frame(width: bubble.size, height: bubble.size)
                     .position(bubble.position)
+                //when user taps bubble
                     .onTapGesture {
                         if (bubble.color == .red){
-                            score += 1
+                            if (previousTappedBubble == .red){
+                                score += Int(round(redPoints*consecutiveMultiplier))
+                            }
+                            else{
+                                score += Int(redPoints)
+                            }
+                            previousTappedBubble = .red
                         }
                         else if (bubble.color == .pink){
-                            score += 2
+                            if (previousTappedBubble == .pink){
+                                score += Int(round(pinkPoints*consecutiveMultiplier))
+                            }
+                            else{
+                                score += Int(pinkPoints)
+                            }
+                            previousTappedBubble = .pink
                         }
                         else if (bubble.color == .green){
-                            score += 5
+                            if (previousTappedBubble == .green){
+                                score += Int(round(greenPoints*consecutiveMultiplier))
+                            }
+                            else{
+                                score += Int(greenPoints)
+                            }
+                            previousTappedBubble = .green
                         }
                         else if (bubble.color == .blue){
-                            score += 8
+                            if (previousTappedBubble == .blue){
+                                score += Int(round(bluePoints*consecutiveMultiplier))
+                            }
+                            else{
+                                score += Int(bluePoints)
+                            }
+                            previousTappedBubble = .blue
                         }
                         else if (bubble.color == .black){
-                            score += 10
+                            if (previousTappedBubble == .black){
+                                score += Int(round(blackPoints*consecutiveMultiplier))
+                            }
+                            else{
+                                score += Int(blackPoints)
+                            }
+                            previousTappedBubble = .black
                         }
                         bubbles.removeAll { $0 == bubble }
                     }
