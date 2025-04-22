@@ -26,9 +26,9 @@ struct GameView: View {
     @Binding var numberOfBubbles: Double
 
     // Screen size placeholder
-    // -20 offset to ensure bubble fully appears in the game window
-    let screenWidth = UIScreen.main.bounds.width - 20
-    let screenHeight = UIScreen.main.bounds.height - 20
+    // -20 offset to ensure bubble fully appears in the game window NEED FIX
+    let screenWidth = UIScreen.main.bounds.width - 50
+    let screenHeight = UIScreen.main.bounds.height - 50
     let bubbleColors: [Color] = [.red, .pink, .green, .blue, .black]
     
     // track previous bubble color tapped; initialy color is brown to prevent extra points from consecutive color. this will be replaced in game
