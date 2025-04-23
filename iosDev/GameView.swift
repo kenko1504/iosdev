@@ -18,7 +18,7 @@ struct GameView: View {
     @State private var score: Int = 0
     @State private var localUserName: String = ""
     @State private var localTimeLimit: Double = 10
-    @State private var localPlayers: [(name:String, score:Int)] = [("",0)]
+    @State private var localPlayers: [(name:String, score:Int)] = []
     @State private var localScore: Int = 0
     @State private var timerRunning: Bool = true
     @State private var bubbles: [Bubble] = []
@@ -68,12 +68,12 @@ struct GameView: View {
                                 } else {
                                     timerRunning = false
                                     if (transitionToGameOverView == false){
+                                        players.append((localUserName, localScore))
                                         localPlayers.append((localUserName, localScore))
                                     }
                                     transitionToGameOverView = true
  
                                 }
-                                print(transitionToGameOverView)
                                 localScore = score
                             }
                         Spacer()
@@ -197,6 +197,6 @@ struct GameView: View {
 
 struct GameView_Previews: PreviewProvider {
     static var previews: some View {
-        GameView(timeLimit: .constant(6), numberOfBubbles: .constant(15), userName: .constant(""), players: . constant([("", 0)]))
+        GameView(timeLimit: .constant(6), numberOfBubbles: .constant(15), userName: .constant(""), players: . constant([]))
     }
 }

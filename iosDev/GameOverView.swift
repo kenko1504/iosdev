@@ -31,5 +31,5 @@ struct GameOverView: View {
 }
 
 #Preview {
-    GameOverView(localPlayers: .constant([(name:"",score:0)]))
+    GameOverView(localPlayers: .constant([]))
 }

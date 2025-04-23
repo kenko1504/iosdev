@@ -44,9 +44,11 @@ struct ContentView: View {
                     Text("start game!")
                         .padding()
                 }
+                
+            }
+            .onAppear{
             }
         }
-
     }
 }
 
