@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var userName: String = ""
     @State private var numberOfBubbles: Double = 15
     @State private var timeLimit: Double = 60
+    @State private var players: [(name:String, score:Int)] = []
     var body: some View {
         NavigationView{
             VStack{
@@ -39,7 +40,7 @@ struct ContentView: View {
                 
                 
                 Spacer()
-                NavigationLink(destination: GameView(timeLimit:$timeLimit, numberOfBubbles:$numberOfBubbles)) {
+                NavigationLink(destination: GameView(timeLimit:$timeLimit, numberOfBubbles:$numberOfBubbles, userName:$userName, players:$players)) {
                     Text("start game!")
                         .padding()
                 }

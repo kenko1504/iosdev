@@ -16,14 +16,21 @@ struct Bubble: Identifiable, Equatable {
 
 struct GameView: View {
     @State private var score: Int = 0
+    @State private var localUserName: String = ""
     @State private var localTimeLimit: Double = 10
+    @State private var localPlayers: [(name:String, score:Int)] = [("",0)]
+    @State private var localScore: Int = 0
     @State private var timerRunning: Bool = true
     @State private var bubbles: [Bubble] = []
+    //boolean state to programmatically change to game over view when time limit reaches zero.
+    @State private var transitionToGameOverView: Bool = false
 
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     @Binding var timeLimit: Double
     @Binding var numberOfBubbles: Double
+    @Binding var userName: String
+    @Binding var players: [(name:String, score:Int)]
 
     // Screen size placeholder
     // -20 offset to ensure bubble fully appears in the game window NEED FIX
@@ -42,86 +49,106 @@ struct GameView: View {
     let blackPoints: Double = 10
 
     var body: some View {
-        ZStack {
-            VStack {
-                HStack {
-                    Text("Time: \(Int(localTimeLimit))")
-                        .onReceive(timer) { _ in
-                            if localTimeLimit > 0 && timerRunning {
-                                localTimeLimit -= 1
-                            } else {
-                                timerRunning = false
-                            }
-                        }
-                    Spacer()
-                    Text("Score: \(score)")
-                }
-                .padding(.horizontal, 20.0)
 
-                Spacer()
-            }
-
-            ForEach(bubbles) { bubble in
-                Circle()
-                    .fill(bubble.color)
-                    .frame(width: bubble.size, height: bubble.size)
-                    .position(bubble.position)
-                //when user taps bubble
-                    .onTapGesture {
-                        if (bubble.color == .red){
-                            if (previousTappedBubble == .red){
-                                score += Int(round(redPoints*consecutiveMultiplier))
+        NavigationView{
+            ZStack {
+                VStack {
+                    HStack {
+                        Text("Time: \(Int(localTimeLimit))")
+                            .onAppear{
+                                // this code is called to reset timer user re enters this view from its child
+                                transitionToGameOverView = false
+                                timerRunning = true
+                                localScore = 0
+                                localUserName = userName
                             }
-                            else{
-                                score += Int(redPoints)
+                            .onReceive(timer) { _ in
+                                if localTimeLimit > 0 && timerRunning {
+                                    localTimeLimit -= 1
+                                } else {
+                                    timerRunning = false
+                                    if (transitionToGameOverView == false){
+                                        localPlayers.append((localUserName, localScore))
+                                    }
+                                    transitionToGameOverView = true
+ 
+                                }
+                                print(transitionToGameOverView)
+                                localScore = score
                             }
-                            previousTappedBubble = .red
+                        Spacer()
+                        NavigationLink(destination: GameOverView(localPlayers:$localPlayers), isActive: $transitionToGameOverView){
                         }
-                        else if (bubble.color == .pink){
-                            if (previousTappedBubble == .pink){
-                                score += Int(round(pinkPoints*consecutiveMultiplier))
-                            }
-                            else{
-                                score += Int(pinkPoints)
-                            }
-                            previousTappedBubble = .pink
-                        }
-                        else if (bubble.color == .green){
-                            if (previousTappedBubble == .green){
-                                score += Int(round(greenPoints*consecutiveMultiplier))
-                            }
-                            else{
-                                score += Int(greenPoints)
-                            }
-                            previousTappedBubble = .green
-                        }
-                        else if (bubble.color == .blue){
-                            if (previousTappedBubble == .blue){
-                                score += Int(round(bluePoints*consecutiveMultiplier))
-                            }
-                            else{
-                                score += Int(bluePoints)
-                            }
-                            previousTappedBubble = .blue
-                        }
-                        else if (bubble.color == .black){
-                            if (previousTappedBubble == .black){
-                                score += Int(round(blackPoints*consecutiveMultiplier))
-                            }
-                            else{
-                                score += Int(blackPoints)
-                            }
-                            previousTappedBubble = .black
-                        }
-                        bubbles.removeAll { $0 == bubble }
+                        Text("Score: \(score)")
                     }
+                    .padding(.horizontal, 20.0)
+                    
+                    Spacer()
+                }
+                ForEach(bubbles) { bubble in
+                    Circle()
+                        .fill(bubble.color)
+                        .frame(width: bubble.size, height: bubble.size)
+                        .position(bubble.position)
+                    //when user taps bubble
+                        .onTapGesture {
+                            if (bubble.color == .red){
+                                if (previousTappedBubble == .red){
+                                    score += Int(round(redPoints*consecutiveMultiplier))
+                                }
+                                else{
+                                    score += Int(redPoints)
+                                }
+                                previousTappedBubble = .red
+                            }
+                            else if (bubble.color == .pink){
+                                if (previousTappedBubble == .pink){
+                                    score += Int(round(pinkPoints*consecutiveMultiplier))
+                                }
+                                else{
+                                    score += Int(pinkPoints)
+                                }
+                                previousTappedBubble = .pink
+                            }
+                            else if (bubble.color == .green){
+                                if (previousTappedBubble == .green){
+                                    score += Int(round(greenPoints*consecutiveMultiplier))
+                                }
+                                else{
+                                    score += Int(greenPoints)
+                                }
+                                previousTappedBubble = .green
+                            }
+                            else if (bubble.color == .blue){
+                                if (previousTappedBubble == .blue){
+                                    score += Int(round(bluePoints*consecutiveMultiplier))
+                                }
+                                else{
+                                    score += Int(bluePoints)
+                                }
+                                previousTappedBubble = .blue
+                            }
+                            else if (bubble.color == .black){
+                                if (previousTappedBubble == .black){
+                                    score += Int(round(blackPoints*consecutiveMultiplier))
+                                }
+                                else{
+                                    score += Int(blackPoints)
+                                }
+                                previousTappedBubble = .black
+                            }
+                            bubbles.removeAll { $0 == bubble }
+                        }
+                }
             }
-        }
-        .onAppear {
-            localTimeLimit = timeLimit
-            
-            //the attributes for bubbles are generated once when this view is first accessed
-            generateNonOverlappingBubbles()
+            .onAppear {
+                localTimeLimit = timeLimit
+
+                
+                //the attributes for bubbles are generated once when this view is first accessed
+                generateNonOverlappingBubbles()
+            }
+
         }
     }
 
@@ -170,6 +197,6 @@ struct GameView: View {
 
 struct GameView_Previews: PreviewProvider {
     static var previews: some View {
-        GameView(timeLimit: .constant(60), numberOfBubbles: .constant(15))
+        GameView(timeLimit: .constant(6), numberOfBubbles: .constant(15), userName: .constant(""), players: . constant([("", 0)]))
     }
 }
