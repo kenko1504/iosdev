@@ -3,7 +3,7 @@
 //  iosDev
 //
 //  Created by Kenji Watanabe on 18/4/2025.
-//
+
 
 import SwiftUI
 
@@ -56,6 +56,7 @@ struct GameView: View {
                     HStack {
                         Text("Time: \(Int(localTimeLimit))")
                             .onAppear{
+                                
                                 // this code is called to reset timer user re enters this view from its child
                                 transitionToGameOverView = false
                                 timerRunning = true
@@ -96,7 +97,7 @@ struct GameView: View {
                     
                     Spacer()
                 }
-                //render the bubble each frame
+                //render the actual bubble each frame;
                 ForEach(bubbles) { bubble in
                     Circle()
                         .fill(bubble.color)
