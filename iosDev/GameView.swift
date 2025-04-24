@@ -17,7 +17,7 @@ struct Bubble: Identifiable, Equatable {
 struct GameView: View {
     @State private var score: Int = 0
     @State private var localUserName: String = ""
-    @State private var localTimeLimit: Double = 10
+    @State private var localTimeLimit: Double = 60
     @State private var localPlayers: [(name:String, score:Int)] = []
     @State private var localScore: Int = 0
     @State private var timerRunning: Bool = true
@@ -62,11 +62,20 @@ struct GameView: View {
                                 localScore = 0
                                 localUserName = userName
                             }
+                            //the code is executed every second.
                             .onReceive(timer) { _ in
 //                                print(players)
                                 localScore = score
                                 if localTimeLimit > 0 && timerRunning {
                                     localTimeLimit -= 1
+                                    //TASK:randomly remove bubbles
+                                    //1.generate a random number x
+                                    deleteRandomBubbles()
+                                    //generate random number y; however y + current existing bubble count must now exceed the limit
+                                    //add y new bubble that does not overlap
+                                    
+                                    //randomly add newly positioned bubbles
+                                    regenerateRandomBubbles()
                                 }
                                 else {
                                     timerRunning = false
@@ -87,6 +96,7 @@ struct GameView: View {
                     
                     Spacer()
                 }
+                //render the bubble each frame
                 ForEach(bubbles) { bubble in
                     Circle()
                         .fill(bubble.color)
@@ -139,6 +149,7 @@ struct GameView: View {
                                 }
                                 previousTappedBubble = .black
                             }
+                            //tapped bubble gets removed
                             bubbles.removeAll { $0 == bubble }
                         }
                 }
@@ -148,13 +159,78 @@ struct GameView: View {
 
                 
                 //the attributes for bubbles are generated once when this view is first accessed
-                generateNonOverlappingBubbles()
+                initialGenerateNonOverlappingBubbles()
             }
 
         }
     }
+    
+    func deleteRandomBubbles(){
+        //remove random bubbles
+        let maxRemoval = numberOfBubbles/2
+        let randomRemovalNumber = Int.random(in: 1...Int(maxRemoval))
+        let indicesToRemove = Array(bubbles.indices.shuffled().prefix(randomRemovalNumber))
+        
+        for index in indicesToRemove.sorted(by: >) {
+            bubbles.remove(at: index)
+        }
+    }
+    
+    func regenerateRandomBubbles(){
+        //get the current bubble count
+        let bCount = bubbles.count
+        
+        //do not regenerate when there are max number of bubble (the limit in the settings)
+        if (bCount == Int(numberOfBubbles)){
+            return
+        }
+        //must not generate more bubbles then the number limit in the settings
+        let randomGenerationNumber = Int.random(in: 1...(Int(numberOfBubbles)-bCount))
+        
+        for i in 0..<randomGenerationNumber {
+            let radius: CGFloat = 30
+            let newX = CGFloat.random(in: radius...(screenWidth - radius))
+            let newY = CGFloat.random(in: 100...(screenHeight - radius - 50)) // avoid top bar
 
-    func generateNonOverlappingBubbles() {
+            let newPosition = CGPoint(x: newX, y: newY)
+            
+            // appearance probability
+            let weightedColors: [(Color, Int)] = [
+                (.red, 40),
+                (.pink, 30),
+                (.green, 15),
+                (.blue, 10),
+                (.black, 5)
+            ]
+            
+            //generate an array containing 100 bubble colors with the correct amount of colors as indicated in the weightedColor variable
+            let colorPool = weightedColors.flatMap {
+                color, weight in Array(repeating: color, count: weight)
+            }
+            
+            //create new bubble
+            let newBubble = Bubble(position: newPosition, color: colorPool.randomElement()!)
+
+            let overlaps = bubbles.contains { existing in
+                let dx = existing.position.x - newBubble.position.x
+                let dy = existing.position.y - newBubble.position.y
+                let distance = sqrt(dx * dx + dy * dy)
+                return distance < existing.size
+            }
+
+            if !overlaps {
+                bubbles.append(newBubble)
+            }
+            else{
+                continue
+            }
+        }
+        
+    }
+    
+    
+    
+    func initialGenerateNonOverlappingBubbles() {
         var newBubbles: [Bubble] = []
         
         // appearance probability
@@ -199,6 +275,6 @@ struct GameView: View {
 
 struct GameView_Previews: PreviewProvider {
     static var previews: some View {
-        GameView(timeLimit: .constant(6), numberOfBubbles: .constant(15), userName: .constant(""), players: . constant([]))
+        GameView(timeLimit: .constant(60), numberOfBubbles: .constant(15), userName: .constant(""), players: . constant([]))
     }
 }

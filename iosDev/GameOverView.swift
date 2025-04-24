@@ -8,7 +8,6 @@
 import SwiftUI
 
 // Force to enter this view after time reach zero in game view
-// User can either enter contentview or game view from this view
 struct GameOverView: View {
     @State var testPlayers = [("Bob", 10), ("Alice", 4), ("Tran", 76), ("Bob", 34)]
     @Binding var localPlayers: [(name:String, score: Int)]
