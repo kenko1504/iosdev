@@ -33,7 +33,7 @@ struct GameView: View {
     @Binding var players: [(name:String, score:Int)]
 
     // Screen size placeholder
-    // -20 offset to ensure bubble fully appears in the game window NEED FIX
+    // -50 offset to ensure bubble fully appears in the game window NEED FIX
     let screenWidth = UIScreen.main.bounds.width - 50
     let screenHeight = UIScreen.main.bounds.height - 50
     let bubbleColors: [Color] = [.red, .pink, .green, .blue, .black]
@@ -63,18 +63,20 @@ struct GameView: View {
                                 localUserName = userName
                             }
                             .onReceive(timer) { _ in
+//                                print(players)
+                                localScore = score
                                 if localTimeLimit > 0 && timerRunning {
                                     localTimeLimit -= 1
-                                } else {
+                                }
+                                else {
                                     timerRunning = false
                                     if (transitionToGameOverView == false){
                                         players.append((localUserName, localScore))
-                                        localPlayers.append((localUserName, localScore))
+                                        localPlayers = players
                                     }
                                     transitionToGameOverView = true
- 
                                 }
-                                localScore = score
+                                
                             }
                         Spacer()
                         NavigationLink(destination: GameOverView(localPlayers:$localPlayers), isActive: $transitionToGameOverView){
