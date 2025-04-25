@@ -192,6 +192,8 @@ struct GameView: View {
                             }
                             //tapped bubble gets removed
                             bubbles.removeAll { $0 == bubble }
+                            
+                            updateHighScoreRealTime()
                         }
                 }
             }
@@ -267,6 +269,12 @@ struct GameView: View {
             }
         }
         
+    }
+    
+    func updateHighScoreRealTime()-> Void{
+        if (score > obtainHighScore()){
+            highScore = score
+        }
     }
     
     func obtainHighScore()-> Int{
