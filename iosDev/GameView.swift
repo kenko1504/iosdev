@@ -12,6 +12,7 @@ struct Bubble: Identifiable, Equatable {
     var position: CGPoint
     var color: Color
     let size: CGFloat = 60
+    var initialAppearance: Bool = false
 }
 
 struct GameView: View {
@@ -103,6 +104,35 @@ struct GameView: View {
                         .fill(bubble.color)
                         .frame(width: bubble.size, height: bubble.size)
                         .position(bubble.position)
+                        .opacity(bubble.initialAppearance ? 1:0)
+                        .onAppear{
+                            // add fade in effect for the first ever appeared bubbles
+                            withAnimation(.easeIn(duration:1.0)){
+                                if let index = bubbles.firstIndex(where: {$0.id == bubble.id}){
+                                    bubbles[index].initialAppearance = true
+                                }
+                            }
+                            //move bubble outside the screen
+                            withAnimation(.easeIn(duration:10.0).delay(1)){
+                                if let index = bubbles.firstIndex(where: {$0.id == bubble.id}){
+                                    //generate a random target coordinate outside the screen
+                                    //generate 4 coordinates that the bubble will travel towards ousdie the screen
+                                    let screenBounds = UIScreen.main.bounds
+                                    let destinations: [(CGFloat, CGFloat)] = [
+                                        (-100, -100), // Top-left, outside screen
+                                        (screenBounds.width + 100, -100), // Top-right, outside screen
+                                        (-100, screenBounds.height + 100), // Bottom-left, outside screen
+                                        (screenBounds.width + 100, screenBounds.height + 100) // Bottom-right, outside screen
+                                    ]
+                                    
+                                    // Select a random destination
+                                    if let result = destinations.randomElement() {
+                                        // Update position with CGFloat values
+                                        bubbles[index].position = CGPoint(x: result.0, y: result.1)
+                                    }
+                                }
+                            }
+                        }
                     //when user taps bubble
                         .onTapGesture {
                             if (bubble.color == .red){
@@ -256,6 +286,7 @@ struct GameView: View {
             let newPosition = CGPoint(x: newX, y: newY)
             
             //create new bubble
+
             let newBubble = Bubble(position: newPosition, color: colorPool.randomElement()!)
 
             let overlaps = newBubbles.contains { existing in
