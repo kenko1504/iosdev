@@ -3,6 +3,7 @@
 //  iosDev
 //
 //  Created by Kenji Watanabe on 18/4/2025.
+//  This code is so spaghetti
 
 
 import SwiftUI
@@ -16,6 +17,7 @@ struct Bubble: Identifiable, Equatable {
 }
 
 struct GameView: View {
+    @State private var highScore: Int = 0
     @State private var score: Int = 0
     @State private var localUserName: String = ""
     @State private var localTimeLimit: Double = 60
@@ -59,10 +61,12 @@ struct GameView: View {
                             .onAppear{
                                 
                                 // this code is called to reset timer user re enters this view from its child
+                                // it also runs the first time when this view is entered
                                 transitionToGameOverView = false
                                 timerRunning = true
                                 localScore = 0
                                 localUserName = userName
+                                highScore = obtainHighScore()
                             }
                             //the code is executed every second.
                             .onReceive(timer) { _ in
@@ -93,6 +97,8 @@ struct GameView: View {
                         NavigationLink(destination: GameOverView(localPlayers:$localPlayers), isActive: $transitionToGameOverView){
                         }
                         Text("Score: \(score)")
+                        Spacer()
+                        Text("High score: \(highScore)")
                     }
                     .padding(.horizontal, 20.0)
                     
@@ -113,15 +119,19 @@ struct GameView: View {
                                 }
                             }
                             //move bubble outside the screen
-                            withAnimation(.easeIn(duration:10.0).delay(1)){
+                            withAnimation(.easeIn(duration:2).delay(1)){
                                 if let index = bubbles.firstIndex(where: {$0.id == bubble.id}){
                                     //generate a random target coordinate outside the screen
-                                    //generate 4 coordinates that the bubble will travel towards ousdie the screen
+                                    //generate 8 coordinates that the bubble will travel towards ousdie the screen
                                     let screenBounds = UIScreen.main.bounds
                                     let destinations: [(CGFloat, CGFloat)] = [
                                         (-100, -100), // Top-left, outside screen
                                         (screenBounds.width + 100, -100), // Top-right, outside screen
+                                        (screenBounds.width/2, -100), // Top-mid
+                                        (screenBounds.width/2, screenBounds.height+100), // Bottom-mid
                                         (-100, screenBounds.height + 100), // Bottom-left, outside screen
+                                        (-100, screenBounds.height/2), //left mid
+                                        (screenBounds.width/2 + 100, screenBounds.height), //right mid
                                         (screenBounds.width + 100, screenBounds.height + 100) // Bottom-right, outside screen
                                     ]
                                     
@@ -259,7 +269,19 @@ struct GameView: View {
         
     }
     
-    
+    func obtainHighScore()-> Int{
+        //find the highest score by accessing the 2nd pair of the tuple element
+        //add player score data from tuple into an array for int only
+        //use max() to find highest score
+        print(players)
+        var scoreArr:[Int] = []
+        for playerTuple in players {
+            scoreArr.append(playerTuple.1)
+        }
+        print(scoreArr)
+        print(scoreArr.max())
+        return scoreArr.max() ?? 0
+    }
     
     func initialGenerateNonOverlappingBubbles() {
         var newBubbles: [Bubble] = []
