@@ -230,7 +230,7 @@ struct GameView: View {
         //must not generate more bubbles then the number limit in the settings
         let randomGenerationNumber = Int.random(in: 1...(Int(numberOfBubbles)-bCount))
         
-        for i in 0..<randomGenerationNumber {
+        for _ in 0..<randomGenerationNumber {
             let radius: CGFloat = 30
             let newX = CGFloat.random(in: radius...(screenWidth - radius))
             let newY = CGFloat.random(in: 100...(screenHeight - radius - 50)) // avoid top bar
