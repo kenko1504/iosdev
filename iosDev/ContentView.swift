@@ -4,6 +4,7 @@
 //
 //  Created by Kenji Watanabe on 15/4/2025.
 // test2
+//new line
 
 import SwiftUI
 
