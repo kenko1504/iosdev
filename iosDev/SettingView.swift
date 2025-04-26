@@ -25,7 +25,7 @@ struct SettingView: View {
             
             Slider(
                 value: $numberOfBubbles,
-                in: 0...15,
+                in: 1...15,
                 step: 1
                 )
             .padding(.horizontal, 60.0)
