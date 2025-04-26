@@ -4,7 +4,7 @@
 //
 //  Created by Kenji Watanabe on 18/4/2025.
 //  This code is so spaghetti
-
+//to-do scale the bubble and fade out as it pops
 
 import SwiftUI
 
@@ -14,6 +14,9 @@ struct Bubble: Identifiable, Equatable {
     var color: Color
     let size: CGFloat = 60
     var initialAppearance: Bool = false
+    var scale: Double = 1
+    var opacity: Double = 1
+    var tapped: Bool = false
 }
 
 struct GameView: View {
@@ -110,7 +113,8 @@ struct GameView: View {
                         .fill(bubble.color)
                         .frame(width: bubble.size, height: bubble.size)
                         .position(bubble.position)
-                        .opacity(bubble.initialAppearance ? 1:0)
+                        .scaleEffect(bubble.scale)
+                        .opacity(bubble.initialAppearance ? bubble.opacity:0)
                         .onAppear{
                             // add fade in effect for the first ever appeared bubbles
                             withAnimation(.easeIn(duration:1.0)){
@@ -119,6 +123,7 @@ struct GameView: View {
                                 }
                             }
                             //move bubble outside the screen
+                            //Disable movement if tapped
                             withAnimation(.easeIn(duration:2).delay(1)){
                                 if let index = bubbles.firstIndex(where: {$0.id == bubble.id}){
                                     //generate a random target coordinate outside the screen
@@ -142,6 +147,7 @@ struct GameView: View {
                                     }
                                 }
                             }
+                            
                         }
                     //when user taps bubble
                         .onTapGesture {
@@ -190,9 +196,10 @@ struct GameView: View {
                                 }
                                 previousTappedBubble = .black
                             }
+                            
+                            deleteBubbleAnimation(bubble: bubble)
                             //tapped bubble gets removed
                             bubbles.removeAll { $0 == bubble }
-                            
                             updateHighScoreRealTime()
                         }
                 }
@@ -269,6 +276,16 @@ struct GameView: View {
             }
         }
         
+    }
+    
+    func deleteBubbleAnimation(bubble:Bubble)-> Void{
+        //when user taps the bubble, it scales up slightly and fades away before deleting itself.
+        withAnimation(.easeInOut(duration: 0.2)) {
+            if let index = bubbles.firstIndex(where: {$0.id == bubble.id}){
+                bubbles[index].scale = 3
+                bubbles[index].opacity = 0
+            }
+        }
     }
     
     func updateHighScoreRealTime()-> Void{
